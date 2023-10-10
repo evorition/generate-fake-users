@@ -38,7 +38,7 @@ const UsersTable = ({ seed, locale }) => {
   }, [locale, seed]);
 
   return (
-    <Table striped bordered hover responsive>
+    <Table striped bordered hover responsive style={{ fontSize: "1.3rem" }}>
       <thead>
         <tr>
           <th>#</th>
