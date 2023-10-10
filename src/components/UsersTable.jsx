@@ -1,21 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { faker } from "@faker-js/faker";
 import Table from "react-bootstrap/Table";
 
 import createRandomUser from "../utils/createRandomUser";
+import generateRandomErrors from "../utils/generateRandomErrors";
 
-const UsersTable = ({ seed, locale }) => {
+const UsersTable = ({ seed, locale, errors }) => {
   const [fakeUsers, setFakeUsers] = useState([]);
+  const page = useRef(0);
 
   const generateFakeUsers = (reset = false) => {
+    faker.seed(seed + page.current);
     const numberToGenerate = reset ? 20 : 10;
     const newFakeUsers = Array.from(
       { length: numberToGenerate },
       createRandomUser
     );
+    newFakeUsers.forEach((user) => generateRandomErrors(user, errors));
     setFakeUsers((prevFakeUsers) =>
       reset ? newFakeUsers : [...prevFakeUsers, ...newFakeUsers]
     );
+    page.current += 1;
   };
 
   const onScroll = () => {
@@ -32,13 +37,13 @@ const UsersTable = ({ seed, locale }) => {
   });
 
   useEffect(() => {
+    page.current = 0;
     faker.setLocale(locale);
-    faker.seed(seed);
     generateFakeUsers(true);
-  }, [locale, seed]);
+  }, [locale, seed, errors]);
 
   return (
-    <Table striped bordered hover responsive style={{ fontSize: "1.3rem" }}>
+    <Table striped bordered hover responsive style={{ fontSize: "1.25rem" }}>
       <thead>
         <tr>
           <th>#</th>
@@ -48,11 +53,11 @@ const UsersTable = ({ seed, locale }) => {
           <th>Phone Number</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody style={{ wordBreak: "break-word" }}>
         {fakeUsers.map((fakeUser, index) => {
           return (
             <tr key={fakeUser.uuid}>
-              <td>{index + 1}</td>
+              <td style={{ width: "3.5rem" }}>{index + 1}</td>
               <td>{fakeUser.uuid}</td>
               <td>{fakeUser.fullName}</td>
               <td>{fakeUser.address}</td>

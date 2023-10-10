@@ -14,7 +14,7 @@ function App() {
   const MAX_SEED_NUMBER = 10_000_000;
 
   const [locale, setLocale] = useState("en_US");
-  const [seed, setSeed] = useState(42);
+  const [seed, setSeed] = useState(0);
   const [errors, setErrors] = useState(0);
 
   return (
@@ -36,6 +36,8 @@ function App() {
           <FloatingLabel label="Number of errors">
             <Form.Control
               type="number"
+              min={0}
+              step={0.25}
               value={errors}
               onChange={({ target }) =>
                 setErrors(Math.min(1000, +target.value))
@@ -74,7 +76,7 @@ function App() {
           </Row>
         </Col>
       </Row>
-      <UsersTable seed={seed} locale={locale} />
+      <UsersTable seed={seed} locale={locale} errors={errors} />
     </Container>
   );
 }
